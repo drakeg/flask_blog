@@ -1,4 +1,5 @@
-from blog import db, login_manager
+from blog import db, login_manager, app
+from itsdangerous import URLSafeTimedSerializer as Serializer
 from datetime import datetime
 from flask_login import UserMixin
 
@@ -14,8 +15,9 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(60), nullable=False)
     posts = db.relationship('Post', backref='author', lazy=True)
 
-    def __repr__(self):
-        return f"User('{self.username}', '{self.email}', '{self.image_file}')"
+    def generate_reset_password_token(self):
+        serializer = Serializer(app.config["SECRET_KEY"])
+        return serializer.dumps(self.email, salt=self.password)
     
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
