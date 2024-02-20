@@ -4,28 +4,29 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_mailman import Mail
+from blog.config import Config
 
-app = Flask(__name__)
+db = SQLAlchemy()
+bcrypt = Bcrypt()
+login_manager = LoginManager()
+login_manager.login_view = 'users.login'
+login_manager.login_message_category = 'info'
 mail = Mail()
 
-app.config['SECRET_KEY'] = '63f9fcaa7a7bac656d1326258a8b16a5'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'june5wed@gmail.com'
-app.config['MAIL_PASSWORD'] = 'qmce iawm cbup niod'
-app.config['MAIL_FILE_PATH'] = 'mail'
-#app.config['MAIL_USERNAME'] = os.environ.get('EMAIL_USER')
-#app.config['MAIL_PASSWORD'] = os.environ.get('EMAIL_PASS')
-app.config['RESET_PASS_TOKEN_MAX_AGE'] = 30
+def create_app(config_class=Config):
+    app = Flask(__name__)
+    app.config.from_object(Config)
 
-db = SQLAlchemy(app)
-bcrypt = Bcrypt(app)
-login_manager = LoginManager(app)
-login_manager.login_view = 'login'
-login_manager.login_message_category = 'info'
-mail.init_app(app)
+    db.init_app(app)
+    bcrypt.init_app(app)
+    login_manager.init_app(app)
+    mail.init_app(app)
 
-from blog import routes
+    from blog.users.routes import users
+    from blog.posts.routes import posts
+    from blog.main.routes import main
+    app.register_blueprint(users)
+    app.register_blueprint(posts)
+    app.register_blueprint(main)
+
+    return app
