@@ -10,6 +10,7 @@ instance/*
 
 ### Flask.Python Stack ###
 # Byte-compiled / optimized / DLL files
+__pycache__
 __pycache__/
 *.py[cod]
 *$py.class
@@ -160,6 +161,9 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# OSX files
+.DS_Store
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
