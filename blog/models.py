@@ -16,9 +16,13 @@ class User(db.Model, UserMixin):
     posts = db.relationship('Post', backref='author', lazy=True)
 
     def generate_reset_password_token(self):
-        serializer = Serializer(app.config["SECRET_KEY"])
-        return serializer.dumps(self.email, salt=self.password)
-    
+        serializer = Serializer(app.config["SECRET_KEY"], salt="email-reset")
+        return serializer.dumps(self.email)
+
+    @classmethod
+    def find_by_email(cls, email):
+        return cls.query.filter_by(email=email).first()
+
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)

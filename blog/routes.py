@@ -7,10 +7,7 @@ from blog.models import User, Post
 from blog import app, db, bcrypt
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_mailman import EmailMessage
-
-from blog.templates.reset_password_email_content import (
-    reset_password_email_html_content
-)
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 
 @app.route('/')
 def home():
@@ -148,28 +145,6 @@ def user_posts(username):
         .paginate(page=page, per_page=5)
     return render_template('user_posts.html', posts=posts, user=user)
 
-def send_reset_email(user):
-    reset_password_url = url_for(
-        "reset_password_request",
-        token=user.generate_reset_password_token(),
-        user_id=user.id,
-        _external=True,
-    )
-    print(reset_password_url)
-    email_body = render_template_string(
-        reset_password_email_html_content, reset_password_url=reset_password_url
-    )
-    print(email_body)
-    message = EmailMessage(
-        subject="Reset your password",
-        from_email="greg@drakeweb.org",
-        body=email_body,
-        to=[user.email],
-    )
-    message.content_subtype = "html"
-
-    message.send()
-
 @app.route("/reset_password", methods=['GET', 'POST'])
 def reset_password_request():
     if current_user.is_authenticated:
@@ -177,26 +152,40 @@ def reset_password_request():
     form = ResetPasswordRequestForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
-
         if user:
-            send_reset_email(user)
-        flash('Instructions to reset your password were sent to your email address if it exists in our system.', 'info')
+            token = user.generate_reset_password_token()
+            msg = EmailMessage(
+                subject="Password Reset Request",
+                body=f"To reset your password, visit the following link: {url_for('reset_token', token=token, _external=True)}",
+                to=[user.email]
+            )
+            msg.send()
+            flash('An email has been sent with instructions to reset your password, if an account with that email exists..', 'info')
+        else:
+            flash('An email has been sent with instructions to reset your password, if an account with that email exists..', 'info')
         return redirect(url_for('login'))
     return render_template('reset_request.html', title='Reset Password', form=form)
 
 @app.route("/reset_password/<token>", methods=['GET', 'POST'])
 def reset_token(token):
-    if current_user.is_authenticated:
-        return redirect(url_for('home'))
-    user = User.verify_reset_token(token)
+    try:
+        s = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+        email = s.loads(token, salt='email-reset', max_age=3600)
+    except SignatureExpired:
+        flash('The password reset link is expired.', 'warning')
+        return redirect(url_for('reset_password_request'))
+    
+    user = User.find_by_email(email)
     if user is None:
-        flash('That is an invalid or expired token', 'warning')
-        return redirect(url_for('reset_password'))
+        flash('Invalid or expired token.', 'warning')
+        return redirect(url_for('reset_password_request'))
+
     form = ResetPasswordForm()
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         user.password = hashed_password
-        db.session.commit()
-        flash('Your password has been updated! You are now able to log in', 'success')
+        db.session.commit()  # Assuming you have a db session and commit setup
+        flash('Your password has been updated!', 'success')
         return redirect(url_for('login'))
-    return render_template('reset_token.html', title='Reset Password', form=form)
+
+    return render_template('reset_token.html', token=token, form=form)

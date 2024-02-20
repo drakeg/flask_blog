@@ -19,6 +19,7 @@ app.config['MAIL_PASSWORD'] = 'qmce iawm cbup niod'
 app.config['MAIL_FILE_PATH'] = 'mail'
 #app.config['MAIL_USERNAME'] = os.environ.get('EMAIL_USER')
 #app.config['MAIL_PASSWORD'] = os.environ.get('EMAIL_PASS')
+app.config['RESET_PASS_TOKEN_MAX_AGE'] = 30
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
