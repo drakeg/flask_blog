@@ -1,3 +1,4 @@
+import os
 from blog import db, login_manager
 from itsdangerous import URLSafeTimedSerializer as Serializer
 from datetime import datetime
@@ -16,7 +17,7 @@ class User(db.Model, UserMixin):
     posts = db.relationship('Post', backref='author', lazy=True)
 
     def generate_reset_password_token(self):
-        serializer = Serializer(app.config["SECRET_KEY"], salt="email-reset")
+        serializer = Serializer(os.environ.get('SECRET_KEY'), salt="email-reset")
         return serializer.dumps(self.email)
 
     @classmethod
