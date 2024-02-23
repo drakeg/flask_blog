@@ -3,6 +3,7 @@ from blog import db, login_manager
 from itsdangerous import URLSafeTimedSerializer as Serializer
 from datetime import datetime
 from flask_login import UserMixin
+from hashlib import md5
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -12,7 +13,6 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
     password = db.Column(db.String(60), nullable=False)
     posts = db.relationship('Post', backref='author', lazy=True)
 
@@ -23,6 +23,10 @@ class User(db.Model, UserMixin):
     @classmethod
     def find_by_email(cls, email):
         return cls.query.filter_by(email=email).first()
+
+    def avatar(self, size):
+        digest = md5(self.email.lower().encode('utf-8')).hexdigest()
+        return f'https://www.gravatar.com/avatar/{digest}?d=identicon&s={size}'
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
