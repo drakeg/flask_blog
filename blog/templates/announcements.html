@@ -1,0 +1,30 @@
+{% extends "base.html" %} <!-- Assuming you have a base layout -->
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Announcements</h2>
+    <div class="row">
+        {% for announcement in announcements.items %}
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ announcement.title }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ announcement.date_posted.strftime('%Y-%m-%d') }}</h6>
+                    <p class="card-text">{{ announcement.content }}</p>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <p>No announcements to show.</p>
+        {% endfor %}
+    </div>
+    <!-- Pagination Links -->
+    <div class="mt-4">
+        {% if announcements.has_prev %}
+        <a href="{{ url_for('announcements.list_announcements', page=announcements.prev_num) }}" class="btn btn-light">&laquo; Previous</a>
+        {% endif %}
+        {% if announcements.has_next %}
+        <a href="{{ url_for('announcements.list_announcements', page=announcements.next_num) }}" class="btn btn-light">Next &raquo;</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

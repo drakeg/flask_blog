@@ -2,8 +2,8 @@ import os
 import secrets
 from PIL import Image
 from flask import render_template, url_for, flash, redirect, request, Blueprint
-from blog.forms import RegistrationForm, LoginForm, UpdateAccountForm, ResetPasswordRequestForm, ResetPasswordForm
-from blog.models import User, Post
+from blog.users.forms import RegistrationForm, LoginForm, UpdateAccountForm, ResetPasswordRequestForm, ResetPasswordForm
+from blog.models import User, Post, Role
 from blog import db, bcrypt
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_mailman import EmailMessage
@@ -18,7 +18,16 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         hashed_pw = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user = User(username=form.username.data,email=form.email.data, password=hashed_pw)
+
+        # Query the database for the "User" role
+        user_role = Role.query.filter_by(name='User').first()
+        # Fallback in case the role doesn't exist, though you should ensure it does via migrations/seeding
+        if not user_role:
+            user_role = Role(name='User')
+            db.session.add(user_role)
+            db.session.commit()
+
+        user = User(username=form.username.data,email=form.email.data, password=hashed_pw, role=user_role)
         db.session.add(user)
         db.session.commit()
         flash(f'Your account has been created!', 'success')
@@ -36,6 +45,7 @@ def login():
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
             return redirect(next_page) if next_page else redirect(url_for('main.home'))
+            print(f"User role: {user.role}")
             flash(f'Login successful!', 'success')
         else:
             flash('Login Unsuccessful. Please check username and password', 'danger')

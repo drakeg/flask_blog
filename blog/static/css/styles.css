@@ -1,15 +1,28 @@
+@media (max-width: 768px) {
+  .content-section {
+    padding: 15px;
+  }
+  .account-heading {
+    font-size: 2rem;
+  }
+}
+
 body {
     background: #fafafa;
     color: #333333;
     margin-top: 5rem;
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
   }
   
   h1, h2, h3, h4, h5, h6 {
     color: #444444;
+    line-height: 1.6;
+    font-weight: 600;
   }
   
   .bg-steel {
-    background-color: #5f788a;
+    background-color: #394b59;
   }
   
   .site-header .navbar-nav .nav-link {
@@ -23,13 +36,29 @@ body {
   .site-header .navbar-nav .nav-link.active {
     font-weight: 500;
   }
+
+  .site-header .navbar-brand {
+    color: #ffffff;
+  }
+
+  .site-header .btn-navbar-search {
+    color: #ffffff;
+    background-color: #20c997;
+    border-color: #20c997;
+  }
+
+  .site-header .btn-navbar-search:hover {
+    background-color: #198754;
+    border-color: #198754;
+  }
   
   .content-section {
     background: #ffffff;
-    padding: 10px 20px;
+    padding: 20px 30px;
     border: 1px solid #dddddd;
     border-radius: 3px;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   }
   
   .article-title {
@@ -51,6 +80,12 @@ body {
     margin-right: 16px;
   }
   
+  .article-img, .account-img {
+    border: 1px solid #e3e3e3;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 3px; /* Optional: Adds rounded corners */
+  }
+
   .article-metadata {
     padding-bottom: 1px;
     margin-bottom: 4px;
