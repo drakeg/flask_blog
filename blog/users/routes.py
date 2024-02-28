@@ -5,6 +5,7 @@ from flask import render_template, url_for, flash, redirect, request, Blueprint
 from blog.users.forms import RegistrationForm, LoginForm, UpdateAccountForm, ResetPasswordRequestForm, ResetPasswordForm
 from blog.models import User, Post, Role
 from blog import db, bcrypt
+from datetime import datetime
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_mailman import EmailMessage
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
@@ -14,6 +15,7 @@ users = Blueprint('users', __name__)
 @users.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
+        flash(f"You are already registered.", "info")
         return redirect(url_for('main.home'))
     form = RegistrationForm()
     if form.validate_on_submit():
@@ -30,9 +32,34 @@ def register():
         user = User(username=form.username.data,email=form.email.data, password=hashed_pw, role=user_role)
         db.session.add(user)
         db.session.commit()
-        flash(f'Your account has been created!', 'success')
+        token = user.generate_token()
+        msg = EmailMessage(
+            subject="Account Confirmation",
+            body=f"To confirm your account, visit the following link: {url_for('users.confirm_email', token=token, _external=True)}",
+            to=[user.email]
+        )
+        msg.send()
+        flash(f'Your account has been created and a confirmation email sent!', 'success')
         return redirect(url_for('users.login'))
     return render_template('register.html', title='Register', form=form)
+
+@users.route("/confirm/<token>")
+@login_required
+def confirm_email(token):
+    if current_user.is_confirmed:
+        flash("Account already confirmed.", "success")
+        return redirect(url_for("core.home"))
+    email = user.confirm_token(token)
+    user = User.query.filter_by(email=current_user.email).first_or_404()
+    if user.email == email:
+        user.is_confirmed = True
+        user.confirmed_on = datetime.now()
+        db.session.add(user)
+        db.session.commit()
+        flash("You have confirmed your account. Thanks!", "success")
+    else:
+        flash("The confirmation link is invalid or has expired.", "danger")
+    return redirect(url_for("core.home"))
 
 @users.route('/login', methods=['GET', 'POST'])
 def login():
@@ -89,7 +116,7 @@ def reset_password_request():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user:
-            token = user.generate_reset_password_token()
+            token = user.generate_token()
             msg = EmailMessage(
                 subject="Password Reset Request",
                 body=f"To reset your password, visit the following link: {url_for('users.reset_token', token=token, _external=True)}",

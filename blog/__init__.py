@@ -8,6 +8,7 @@ from flask_mailman import Mail
 from flask_migrate import Migrate
 from blog.config import Config
 from blog.models import Post, Announcement
+from blog.commands import register_commands
 
 bcrypt = Bcrypt()
 login_manager.login_view = 'users.login'
@@ -39,6 +40,9 @@ def create_app(config_class=Config):
     app.register_blueprint(main)
     app.register_blueprint(errors)
 
+    # Register CLI commands
+    register_commands(app)
+    
     @app.context_processor
     def inject_latest_posts():
         latest_posts = Post.query.order_by(Post.date_posted.desc()).limit(3).all()

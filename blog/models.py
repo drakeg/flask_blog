@@ -19,13 +19,25 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
+    is_confirmed = db.Column(db.Boolean, nullable=False, default=False)
+    confirmed_on = db.Column(db.DateTime, nullable=True)
     posts = db.relationship('Post', backref='author', lazy=True)
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'), nullable=False)
     role = db.relationship('Role', backref=db.backref('users', lazy=True))
 
-    def generate_reset_password_token(self):
+    def generate_token(self):
         serializer = Serializer(os.environ.get('SECRET_KEY'), salt="email-reset")
         return serializer.dumps(self.email)
+
+    def confirm_token(token, expiration=3600):
+        serializer = Serializer(os.environ.get('SECRET_KEY'))
+        try:
+            email = serializer.loads(
+                token, salt=os.environ.get('SECRET_KEY'), max_age=expiration
+            )
+            return email
+        except Exception:
+            return False
 
     @classmethod
     def find_by_email(cls, email):
