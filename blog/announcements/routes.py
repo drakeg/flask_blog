@@ -5,9 +5,9 @@ from blog.models import Announcement
 from blog.announcements.forms import AnnouncementForm
 from blog.decorators import admin_required
 
-announcements = Blueprint('announcements', __name__)
+announcements_bp = Blueprint('announcements', __name__)
 
-@announcements.route("/announcements/new", methods=['GET', 'POST'])
+@announcements_bp.route("/announcements/new", methods=['GET', 'POST'])
 def new_announcement():
     form = AnnouncementForm()
     if form.validate_on_submit():
@@ -18,7 +18,7 @@ def new_announcement():
         return redirect(url_for('main.home'))
     return render_template('create_announcement.html', title='New Announcement', form=form, legend='New Announcement')
 
-@announcements.route("/announcements")
+@announcements_bp.route("/announcements")
 def list_announcements():
     page = request.args.get('page', 1, type=int)
     announcements = Announcement.query.order_by(Announcement.date_posted.desc()).paginate(page=page, per_page=5)

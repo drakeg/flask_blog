@@ -10,9 +10,9 @@ from flask_login import login_user, current_user, logout_user, login_required
 from flask_mailman import EmailMessage
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 
-users = Blueprint('users', __name__)
+users_bp = Blueprint('users', __name__)
 
-@users.route('/register', methods=['GET', 'POST'])
+@users_bp.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
         flash(f"You are already registered.", "info")
@@ -43,25 +43,26 @@ def register():
         return redirect(url_for('users.login'))
     return render_template('register.html', title='Register', form=form)
 
-@users.route("/confirm/<token>")
-@login_required
+@users_bp.route("/confirm/<token>")
 def confirm_email(token):
-    if current_user.is_confirmed:
-        flash("Account already confirmed.", "success")
-        return redirect(url_for("core.home"))
-    email = user.confirm_token(token)
-    user = User.query.filter_by(email=current_user.email).first_or_404()
-    if user.email == email:
+    s = URLSafeTimedSerializer(os.environ.get('SECRET_KEY'))
+    email = s.loads(token, salt='token-confirm', max_age=3600)
+    #email = User.confirm_token(token)  # This should be a static method
+    if not email:
+        flash("The confirmation link is invalid or has expired.", "danger")
+        return redirect(url_for("users.login"))  # Redirect to login if the token is invalid
+
+    user = User.query.filter_by(email=email).first_or_404()
+    if not user.is_confirmed:
         user.is_confirmed = True
-        user.confirmed_on = datetime.now()
-        db.session.add(user)
+        user.confirmed_on = datetime.utcnow()  # Use UTC for consistency
         db.session.commit()
         flash("You have confirmed your account. Thanks!", "success")
     else:
-        flash("The confirmation link is invalid or has expired.", "danger")
-    return redirect(url_for("core.home"))
+        flash("Account already confirmed.", "info")
+    return redirect(url_for("main.home"))
 
-@users.route('/login', methods=['GET', 'POST'])
+@users_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('main.home'))
@@ -78,12 +79,12 @@ def login():
             flash('Login Unsuccessful. Please check username and password', 'danger')
     return render_template('login.html', title='Login', form=form)
 
-@users.route('/logout')
+@users_bp.route('/logout')
 def logout():
     logout_user()
     return redirect(url_for('main.home'))
 
-@users.route('/account', methods=['GET', 'POST'])
+@users_bp.route('/account', methods=['GET', 'POST'])
 @login_required
 def account():
     form = UpdateAccountForm()
@@ -99,7 +100,7 @@ def account():
     return render_template('account.html', title='Account',
                            form=form)
 
-@users.route("/user/<string:username>")
+@users_bp.route("/user/<string:username>")
 def user_posts(username):
     page = request.args.get('page', 1, type=int)
     user = User.query.filter_by(username=username).first_or_404()
@@ -108,7 +109,7 @@ def user_posts(username):
         .paginate(page=page, per_page=5)
     return render_template('user_posts.html', posts=posts, user=user)
 
-@users.route("/reset_password", methods=['GET', 'POST'])
+@users_bp.route("/reset_password", methods=['GET', 'POST'])
 def reset_password_request():
     if current_user.is_authenticated:
         return redirect(url_for('main.home'))
@@ -129,11 +130,11 @@ def reset_password_request():
         return redirect(url_for('users.login'))
     return render_template('reset_request.html', title='Reset Password', form=form)
 
-@users.route("/reset_password/<token>", methods=['GET', 'POST'])
+@users_bp.route("/reset_password/<token>", methods=['GET', 'POST'])
 def reset_token(token):
     try:
         s = URLSafeTimedSerializer(os.environ.get('SECRET_KEY'))
-        email = s.loads(token, salt='email-reset', max_age=3600)
+        email = s.loads(token, salt='token-confirm', max_age=3600)
     except SignatureExpired:
         flash('The password reset link is expired.', 'warning')
         return redirect(url_for('users.reset_password_request'))

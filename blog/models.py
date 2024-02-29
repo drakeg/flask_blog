@@ -26,18 +26,22 @@ class User(db.Model, UserMixin):
     role = db.relationship('Role', backref=db.backref('users', lazy=True))
 
     def generate_token(self):
-        serializer = Serializer(os.environ.get('SECRET_KEY'), salt="email-reset")
+        serializer = Serializer(os.environ.get('SECRET_KEY'), salt="token-confirm")
         return serializer.dumps(self.email)
 
     def confirm_token(token, expiration=3600):
-        serializer = Serializer(os.environ.get('SECRET_KEY'))
+        serializer = Serializer(os.environ.get('SECRET_KEY'), salt="token-confirm")
         try:
-            email = serializer.loads(
-                token, salt=os.environ.get('SECRET_KEY'), max_age=expiration
-            )
-            return email
+            email = serializer.loads(token, salt="token-confirm", max_age=expiration)
         except Exception:
             return False
+        user = User.query.filter_by(email=email).first()
+        if not user:
+            return False
+        user.is_confirmed = True
+        user.confirmed_on = datetime.utcnow()
+        db.session.commit()
+        return True
 
     @classmethod
     def find_by_email(cls, email):

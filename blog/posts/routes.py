@@ -5,10 +5,10 @@ from blog.models import Post
 from blog.posts.forms import PostForm
 from blog.decorators import admin_or_author_required
 
-posts = Blueprint('posts', __name__)
+posts_bp = Blueprint('posts', __name__)
 
 
-@posts.route("/post/new", methods=['GET', 'POST'])
+@posts_bp.route("/post/new", methods=['GET', 'POST'])
 @login_required
 @admin_or_author_required
 def new_post():
@@ -23,13 +23,13 @@ def new_post():
                            form=form, legend='New Post')
 
 
-@posts.route("/post/<int:post_id>")
+@posts_bp.route("/post/<int:post_id>")
 def post(post_id):
     post = Post.query.get_or_404(post_id)
     return render_template('post.html', title=post.title, post=post)
 
 
-@posts.route("/post/<int:post_id>/update", methods=['GET', 'POST'])
+@posts_bp.route("/post/<int:post_id>/update", methods=['GET', 'POST'])
 @login_required
 def update_post(post_id):
     post = Post.query.get_or_404(post_id)
@@ -48,7 +48,7 @@ def update_post(post_id):
     return render_template('create_post.html', title='Update Post',
                            form=form, legend='Update Post')
 
-@posts.route("/post/<int:post_id>/delete", methods=['POST'])
+@posts_bp.route("/post/<int:post_id>/delete", methods=['POST'])
 @login_required
 def delete_post(post_id):
     post = Post.query.get_or_404(post_id)

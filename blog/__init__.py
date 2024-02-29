@@ -29,20 +29,20 @@ def create_app(config_class=Config):
     login_manager.login_message_category = 'info'
 
     from blog.models import Post
-    from blog.announcements.routes import announcements
-    from blog.users.routes import users
-    from blog.posts.routes import posts
-    from blog.main.routes import main
-    from blog.errors.handlers import errors
-    app.register_blueprint(announcements)
-    app.register_blueprint(users)
-    app.register_blueprint(posts)
-    app.register_blueprint(main)
-    app.register_blueprint(errors)
+    from blog.announcements.routes import announcements_bp
+    from blog.users.routes import users_bp
+    from blog.posts.routes import posts_bp
+    from blog.main.routes import main_bp
+    from blog.errors.handlers import errors_bp
+    app.register_blueprint(announcements_bp)
+    app.register_blueprint(users_bp)
+    app.register_blueprint(posts_bp)
+    app.register_blueprint(main_bp)
+    app.register_blueprint(errors_bp)
 
     # Register CLI commands
     register_commands(app)
-    
+
     @app.context_processor
     def inject_latest_posts():
         latest_posts = Post.query.order_by(Post.date_posted.desc()).limit(3).all()
