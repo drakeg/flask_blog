@@ -1,3 +1,4 @@
+import bleach
 import os
 from blog import login_manager
 from blog.extensions import db
@@ -5,6 +6,7 @@ from itsdangerous import URLSafeTimedSerializer as Serializer
 from datetime import datetime
 from flask_login import UserMixin
 from hashlib import md5
+from markdown import markdown
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -56,18 +58,40 @@ class Post(db.Model):
     title = db.Column(db.String(100), nullable=False)
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     content = db.Column(db.Text, nullable=False)
+    content_html = db.Column(db.String())
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):
         return f"Post('{self.title}', '{self.date_posted}')"
 
+    @staticmethod
+    def on_changed_content(target, value, oldvalue, initiator):
+        allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
+        'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
+        'h1', 'h2', 'h3', 'p']
+        target.content_html = bleach.linkify(bleach.clean(
+        markdown(value, output_format='html'),
+        tags=allowed_tags, strip=True))
+db.event.listen(Post.content, 'set', Post.on_changed_content)
+
 class Announcement(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     content = db.Column(db.Text, nullable=False)
+    content_html = db.Column(db.String())
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     start_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     end_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     def __repr__(self):
         return f"Announcement('{self.title}', '{self.date_posted}')"
+
+    @staticmethod
+    def on_changed_content(target, value, oldvalue, initiator):
+        allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
+        'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
+        'h1', 'h2', 'h3', 'p']
+        target.content_html = bleach.linkify(bleach.clean(
+        markdown(value, output_format='html'),
+        tags=allowed_tags, strip=True))
+db.event.listen(Announcement.content, 'set', Announcement.on_changed_content)

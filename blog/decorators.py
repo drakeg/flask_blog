@@ -33,3 +33,12 @@ def admin_or_author_required(f):
             return redirect(url_for('main.home'))
         return f(*args, **kwargs)
     return decorated_function
+
+def email_confirmed_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_confirmed:
+            flash('Please confirm your email address to access this feature.', 'warning')
+            return redirect(url_for('users.unconfirmed'))
+        return f(*args, **kwargs)
+    return decorated_function

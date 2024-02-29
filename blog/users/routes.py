@@ -9,6 +9,7 @@ from datetime import datetime
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_mailman import EmailMessage
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
+from blog.decorators import email_confirmed_required
 
 users_bp = Blueprint('users', __name__)
 
@@ -84,8 +85,29 @@ def logout():
     logout_user()
     return redirect(url_for('main.home'))
 
+@users_bp.route('/unconfirmed')
+@login_required
+def unconfirmed():
+    if current_user.is_confirmed:
+        return redirect(url_for('main.home'))
+    return render_template('unconfirmed.html')
+
+@users_bp.route('/resend')
+@login_required
+def resend_confirmation():
+    token = current_user.generate_token()
+    msg = EmailMessage(
+        subject="Account Confirmation",
+        body=f"To confirm your account, visit the following link: {url_for('users.confirm_email', token=token, _external=True)}",
+        to=[current_user.email]
+    )
+    msg.send()
+    flash('A new confirmation email has been sent.', 'success')
+    return redirect(url_for('users.unconfirmed'))
+
 @users_bp.route('/account', methods=['GET', 'POST'])
 @login_required
+@email_confirmed_required
 def account():
     form = UpdateAccountForm()
     if form.validate_on_submit():
@@ -110,6 +132,7 @@ def user_posts(username):
     return render_template('user_posts.html', posts=posts, user=user)
 
 @users_bp.route("/reset_password", methods=['GET', 'POST'])
+@email_confirmed_required
 def reset_password_request():
     if current_user.is_authenticated:
         return redirect(url_for('main.home'))

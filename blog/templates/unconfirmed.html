@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Email Confirmation Required{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    Email Confirmation Required
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Please Confirm Your Email Address</h5>
+                    <p class="card-text">A confirmation email has been sent to your email address. Please click the link in that email to confirm your account and gain full access to the site.</p>
+                    <p>If you did not receive the email, or if the link has expired, you can click the button below to resend the confirmation email.</p>
+                    <a href="{{ url_for('users.resend_confirmation') }}" class="btn btn-primary">Resend Confirmation Email</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

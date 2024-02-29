@@ -7,7 +7,6 @@ from blog.decorators import admin_or_author_required
 
 posts_bp = Blueprint('posts', __name__)
 
-
 @posts_bp.route("/post/new", methods=['GET', 'POST'])
 @login_required
 @admin_or_author_required
@@ -21,7 +20,6 @@ def new_post():
         return redirect(url_for('main.home'))
     return render_template('create_post.html', title='New Post',
                            form=form, legend='New Post')
-
 
 @posts_bp.route("/post/<int:post_id>")
 def post(post_id):
