@@ -5,6 +5,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_pagedown import PageDown
 from flask_bcrypt import Bcrypt
+from flask_ckeditor import CKEditor
 from flask_mailman import Mail
 from flask_migrate import Migrate
 from blog.config import Config
@@ -12,6 +13,7 @@ from blog.models import Post, Announcement
 from blog.commands import register_commands
 
 bcrypt = Bcrypt()
+ckeditor = CKEditor()
 login_manager.login_view = 'users.login'
 login_manager.login_message_category = 'info'
 mail = Mail()
@@ -22,6 +24,7 @@ def create_app(config_class=Config):
 
     db.init_app(app)
     bcrypt.init_app(app)
+    ckeditor.init_app(app)
     login_manager.init_app(app)
     mail.init_app(app)
     migrate = Migrate(app, db)
