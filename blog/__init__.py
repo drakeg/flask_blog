@@ -16,7 +16,7 @@ import logging
 
 handler = LogtailHandler(source_token=os.environ.get('LOGTAIL_TOKEN'))
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+#logger.setLevel(logging.DEBUG)
 logger.handlers = []
 logger.addHandler(handler)
 

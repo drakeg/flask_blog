@@ -75,9 +75,10 @@ def login():
             next_page = request.args.get('next')
             return redirect(next_page) if next_page else redirect(url_for('main.home'))
             print(f"User role: {user.role}")
+            logger.info(f"Login successful for user with email address {form.email.data}")
             flash(f'Login successful!', 'success')
         else:
-            logger.info(f"Login failed for user with email address {form.email.data}")
+            logger.warning(f"Login failed for user with email address {form.email.data}")
             flash('Login Unsuccessful. Please check username and password', 'danger')
     return render_template('login.html', title='Login', form=form)
 
