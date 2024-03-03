@@ -10,3 +10,4 @@ class Config:
     MAIL_FILE_PATH = 'mail'
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+    BETTER_STACK_KEY = os.environ.get('BETTER_STACK_KEY')

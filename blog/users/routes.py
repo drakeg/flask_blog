@@ -4,7 +4,7 @@ from PIL import Image
 from flask import render_template, url_for, flash, redirect, request, Blueprint
 from blog.users.forms import RegistrationForm, LoginForm, UpdateAccountForm, ResetPasswordRequestForm, ResetPasswordForm
 from blog.models import User, Post, Role
-from blog import db, bcrypt
+from blog import db, bcrypt, logger
 from datetime import datetime
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_mailman import EmailMessage
@@ -27,6 +27,7 @@ def register():
         # Fallback in case the role doesn't exist, though you should ensure it does via migrations/seeding
         if not user_role:
             user_role = Role(name='User')
+            logger.error('The user roles have not been created.')
             db.session.add(user_role)
             db.session.commit()
 
@@ -48,7 +49,6 @@ def register():
 def confirm_email(token):
     s = URLSafeTimedSerializer(os.environ.get('SECRET_KEY'))
     email = s.loads(token, salt='token-confirm', max_age=3600)
-    #email = User.confirm_token(token)  # This should be a static method
     if not email:
         flash("The confirmation link is invalid or has expired.", "danger")
         return redirect(url_for("users.login"))  # Redirect to login if the token is invalid
@@ -77,6 +77,7 @@ def login():
             print(f"User role: {user.role}")
             flash(f'Login successful!', 'success')
         else:
+            logger.info(f"Login failed for user with email address {form.email.data}")
             flash('Login Unsuccessful. Please check username and password', 'danger')
     return render_template('login.html', title='Login', form=form)
 

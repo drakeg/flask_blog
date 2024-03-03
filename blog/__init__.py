@@ -11,6 +11,14 @@ from flask_migrate import Migrate
 from blog.config import Config
 from blog.models import Post, Announcement
 from blog.commands import register_commands
+from logtail import LogtailHandler
+import logging
+
+handler = LogtailHandler(source_token=os.environ.get('LOGTAIL_TOKEN'))
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+logger.handlers = []
+logger.addHandler(handler)
 
 bcrypt = Bcrypt()
 ckeditor = CKEditor()
