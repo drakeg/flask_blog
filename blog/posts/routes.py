@@ -14,6 +14,16 @@ def new_post():
     form = PostForm()
     if form.validate_on_submit():
         post = Post(title=form.title.data, content=form.content.data, author=current_user)
+        tag_names = [tag.strip() for tag in form.tags.data.split(',')]
+
+        for tag_name in tag_names:
+            if tag_name:
+                tag = Tag.query.filter_by(name=tag_name).first()
+                if not tag:
+                    tag = Tag(name=tag_name)
+                    db.session.add(tag)
+                post.tags.append(tag)
+                
         db.session.add(post)
         db.session.commit()
         flash('Your post has been created!', 'success')
@@ -25,7 +35,6 @@ def new_post():
 def post(post_id):
     post = Post.query.get_or_404(post_id)
     return render_template('post.html', title=post.title, post=post)
-
 
 @posts_bp.route("/post/<int:post_id>/update", methods=['GET', 'POST'])
 @login_required

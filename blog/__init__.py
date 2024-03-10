@@ -2,7 +2,6 @@ from datetime import datetime
 import os
 from blog.extensions import db, login_manager
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from flask_pagedown import PageDown
 from flask_bcrypt import Bcrypt
 from flask_ckeditor import CKEditor

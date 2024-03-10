@@ -7,4 +7,5 @@ from flask_ckeditor import CKEditorField
 class PostForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     content = CKEditorField('Content', validators=[DataRequired()])
+    tags = StringField('Tags (separated with commas)', validators=[])
     submit = SubmitField('Post')

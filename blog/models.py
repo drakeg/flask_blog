@@ -12,6 +12,12 @@ from markdown import markdown
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+# Association table for the many-to-many relationship
+posts_tags = db.Table('posts_tags',
+    db.Column('post_id', db.Integer, db.ForeignKey('post.id'), primary_key=True),
+    db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'), primary_key=True)
+)
+
 class Role(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True, nullable=False)
@@ -60,6 +66,8 @@ class Post(db.Model):
     content = db.Column(db.Text, nullable=False)
     content_html = db.Column(db.String())
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    tags = db.relationship('Tag', secondary=posts_tags, lazy='subquery',
+                           backref=db.backref('posts', lazy=True))
 
     def __repr__(self):
         return f"Post('{self.title}', '{self.date_posted}')"
@@ -73,6 +81,10 @@ class Post(db.Model):
         markdown(value, output_format='html'),
         tags=allowed_tags, strip=True))
 db.event.listen(Post.content, 'set', Post.on_changed_content)
+
+class Tag(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=True, nullable=False)
 
 class Announcement(db.Model):
     id = db.Column(db.Integer, primary_key=True)

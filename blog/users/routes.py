@@ -1,5 +1,6 @@
 import os
 import secrets
+import resend
 from PIL import Image
 from flask import render_template, url_for, flash, redirect, request, Blueprint
 from blog.users.forms import RegistrationForm, LoginForm, UpdateAccountForm, ResetPasswordRequestForm, ResetPasswordForm
@@ -10,8 +11,10 @@ from flask_login import login_user, current_user, logout_user, login_required
 from flask_mailman import EmailMessage
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 from blog.decorators import email_confirmed_required
+from blog.email import send_email
 
 users_bp = Blueprint('users', __name__)
+resend.api_key = os.environ.get('RESEND_KEY')
 
 @users_bp.route('/register', methods=['GET', 'POST'])
 def register():
@@ -35,12 +38,7 @@ def register():
         db.session.add(user)
         db.session.commit()
         token = user.generate_token()
-        msg = EmailMessage(
-            subject="Account Confirmation",
-            body=f"To confirm your account, visit the following link: {url_for('users.confirm_email', token=token, _external=True)}",
-            to=[user.email]
-        )
-        msg.send()
+        send_email(user.email, "Account Confirmation", f"To confirm your account, visit the following link: {url_for('users.confirm_email', token=token, _external=True)}")
         flash(f'Your account has been created and a confirmation email sent!', 'success')
         return redirect(url_for('users.login'))
     return render_template('register.html', title='Register', form=form)
