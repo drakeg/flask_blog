@@ -16,6 +16,11 @@
                 {{ post.content }}
               {% endif %}
             </p>
+            <p class="article-tags">
+              {% for tag in post.tags %}
+                <span>{{ tag.name }}</span>
+              {% endfor %}
+            </p>
           </div>
         </article>
     {% endfor %}

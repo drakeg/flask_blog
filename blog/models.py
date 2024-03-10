@@ -59,6 +59,10 @@ class User(db.Model, UserMixin):
         digest = md5(self.email.lower().encode('utf-8')).hexdigest()
         return f'https://www.gravatar.com/avatar/{digest}?d=identicon&s={size}'
 
+class Tag(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=True, nullable=False)
+
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
@@ -81,10 +85,6 @@ class Post(db.Model):
         markdown(value, output_format='html'),
         tags=allowed_tags, strip=True))
 db.event.listen(Post.content, 'set', Post.on_changed_content)
-
-class Tag(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), unique=True, nullable=False)
 
 class Announcement(db.Model):
     id = db.Column(db.Integer, primary_key=True)

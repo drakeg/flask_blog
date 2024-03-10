@@ -1,4 +1,4 @@
 #!/bin/sh
 
-flask db migrate -m "Migration"
-flask db upgrade
+flask  migrate -m "Migration"
+flask migrate upgrade

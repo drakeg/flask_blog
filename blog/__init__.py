@@ -34,7 +34,7 @@ def create_app(config_class=Config):
     ckeditor.init_app(app)
     login_manager.init_app(app)
     mail.init_app(app)
-    migrate = Migrate(app, db)
+    migrate = Migrate(app, db, compare_type=True, render_as_batch=True)
     pagedown = PageDown(app)
 
     login_manager.login_view = 'users.login'
