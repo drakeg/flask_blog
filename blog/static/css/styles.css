@@ -103,6 +103,17 @@ body {
     vertical-align: middle;
   }
   
+  .article-tags {
+    padding-bottom: 1px;
+    margin-bottom: 4px;
+    border-bottom: 1px solid #e3e3e3;
+  }
+  
+  .article-tag-badge:hover {
+    opacity: 0.7;
+    cursor: pointer;
+  }
+
   .account-img {
     height: 125px;
     width: 125px;

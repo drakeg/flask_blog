@@ -17,8 +17,10 @@
               {% endif %}
             </p>
             <p class="article-tags">
+              {% set badge_colors = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'] %}
               {% for tag in post.tags %}
-                <span>{{ tag.name }}</span>
+                {% set badge_color = badge_colors[loop.index0 % badge_colors|length] %}
+                <span class="badge bg-{{ badge_color }} article-tag-badge">{{ tag.name }}</span>
               {% endfor %}
             </p>
           </div>
