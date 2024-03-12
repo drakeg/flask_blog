@@ -34,7 +34,31 @@ def manage_posts():
     posts = Post.query.all()
     return render_template('admin/manage_posts.html', posts=posts)
 
+@admin_bp.route('/add_post')
+def add_post():
+    return render_template('admin/add_post.html')
+
+@admin_bp.route('/edit_post/<int:post_id>', methods=['GET', 'POST'])
+def edit_post(post_id):
+    post_id = request.args.get('post_id')
+    
+@admin_bp.route('/delete_post/<int:post_id>', methods=['GET', 'POST'])
+def delete_post(post_id):
+    post_id = request.args.get('post_id')
+
 @admin_bp.route('/manage_announcements')
 def manage_announcements():
     announcements = Announcement.query.all()
     return render_template('admin/manage_announcements.html', announcements=announcements)
+
+@admin_bp.route('/add_announcement')
+def add_announcement():
+    return render_template('admin/add_announcement.html')
+
+@admin_bp.route('/edit_announcement/<int:announcement_id>', methods=['GET', 'POST'])
+def edit_announcement(announcement_id):
+    announcement_id = request.args.get('announcement_id')
+    
+@admin_bp.route('/delete_announcement/<int:announcement_id>', methods=['GET', 'POST'])
+def delete_announcement(announcement_id):
+    announcement_id = request.args.get('announcement_id')
