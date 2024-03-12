@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
     {% for post in posts.items %}
-        <article class="media content-section">
+        <article class="media content-section post" data-tags="{{ post.tags|map(attribute='name')|join(',') }}">
           <img class="rounded-circle article-img" src="{{ post.author.avatar(64) }}">
           <div class="media-body">
             <div class="article-metadata">
@@ -20,7 +20,7 @@
               {% set badge_colors = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'] %}
               {% for tag in post.tags %}
                 {% set badge_color = badge_colors[loop.index0 % badge_colors|length] %}
-                <span class="badge bg-{{ badge_color }} article-tag-badge">{{ tag.name }}</span>
+                <span class="badge bg-{{ badge_color }} article-tag-badge" data-tag="{{ tag.name }}">{{ tag.name }}</span>
               {% endfor %}
             </p>
           </div>
@@ -37,4 +37,5 @@
         ...
       {% endif %}
     {% endfor %}
+    <button id="show-all-posts">Show All Posts</button>
 {% endblock content %}
