@@ -37,8 +37,13 @@ class ChangePasswordForm(FlaskForm):
 class EditUserForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    # Add more fields as needed
+    role = SelectField('Role', coerce=int, choices=[])
+    is_confirmed = BooleanField('Confirmed')
     submit = SubmitField('Update User')
+
+    def __init__(self, *args, **kwargs):
+        super(EditUserForm, self).__init__(*args, **kwargs)
+        self.role.choices = [(role.id, role.name) for role in Role.query.order_by('name')]
 
 class PostForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])

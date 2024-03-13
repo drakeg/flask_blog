@@ -29,6 +29,11 @@
                   <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('main.about')}}">About</a>
                   </li>
+                  {% if current_user.is_authenticated and current_user.role.name == 'Admin' %}
+                  <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('admin_bp.admin_dashboard')}}">Admin</a>
+                  </li>
+                  {% endif %}
                   <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                       Account
@@ -47,19 +52,6 @@
                       {% endif %}
                     </ul>
                   </li>
-                  {% if current_user.is_authenticated and current_user.role.name == 'Admin' %}
-                  <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      Admin
-                    </a>
-                    <ul class="dropdown-menu">
-                      <li><a class="dropdown-item" href="{{ url_for('posts.new_post') }}">New Post</a></li>
-                      <li><a class="dropdown-item" href="{{ url_for('announcements.new_announcement') }}">New Announcement</a></li>
-                      <li><hr class="dropdown-divider"></li>
-                      <li><a class="dropdown-item" href="{{ url_for('announcements.list_announcements') }}">List Announcements</a></li>
-                    </ul>
-                  </li>
-                  {% endif %}
                 </ul>
                 <form class="d-flex" role="search">
                   <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">

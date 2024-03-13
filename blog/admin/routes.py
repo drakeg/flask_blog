@@ -39,19 +39,21 @@ def add_user():
 @admin_required
 def edit_user(user_id):
     user = User.query.get_or_404(user_id)
-    form = EditUserForm()
-    if form.validate_on_submit():
+    form = EditUserForm(obj=user)
+    if request.method == 'POST' and form.validate_on_submit():
         user.username = form.username.data
         user.email = form.email.data
-        # Update other fields as necessary
+        user.role_id = form.role.data
+        user.is_confirmed = form.is_confirmed.data
         db.session.commit()
-        flash('The user has been updated.', 'success')
+        flash('User has been updated.', 'success')
         return redirect(url_for('admin_bp.manage_users'))
     elif request.method == 'GET':
         form.username.data = user.username
         form.email.data = user.email
-        # Populate other fields as necessary
-    return render_template('admin/edit_user.html', title='Edit User', form=form, user=user)
+        form.role.data = user.role_id
+        form.is_confirmed.data = user.is_confirmed
+    return render_template('admin/edit_user.html', title='Edit User', form=form, user_id=user_id)
 
 @admin_bp.route('/change_password/<int:user_id>', methods=['GET', 'POST'])
 @login_required

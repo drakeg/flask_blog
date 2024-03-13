@@ -5,7 +5,9 @@ class Config:
     SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     BETTER_STACK_KEY = os.environ.get('BETTER_STACK_KEY')
-    EMAIL_SYSTEM='smtp'
+    EMAIL_SYSTEM = 'smtp'
+    FLASK_ENV = 'development'
+    FLASK_DEBUG = True
 
     # Uncomment the proper configuration
     # Depending on what email system used
