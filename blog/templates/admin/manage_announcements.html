@@ -12,6 +12,8 @@
                             <th>#</th>
                             <th>Title</th>
                             <th>Contents</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -20,6 +22,8 @@
                                 <td>{{ loop.index }}</td>
                                 <td>{{ announcement.title }}</td>
                                 <td>{{ announcement.content }}</td>
+                                <td>{{ announcement.start_date }}</td>
+                                <td>{{ announcement.end_date }}</td>
                                 <td>
                                     <a href="{{ url_for('admin_bp.edit_announcement', announcement_id=announcement.id) }}" class="btn btn-primary btn-sm">Edit</a>
                                     <a href="{{ url_for('admin_bp.delete_announcement', announcement_id=announcement.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');">Delete</a>

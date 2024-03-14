@@ -1,5 +1,11 @@
-{% extends "base.html" %}
-    {% block content %}
-    <h1>About</h1>
+{% extends 'base.html' %}
 
-    {% endblock content %}
+{% block content %}
+<div class="container">
+    {% if content.content_html %}
+        {{ content.content_html | safe }}
+  {% else %}
+    {{ content.content | safe }}
+  {% endif %}
+</div>
+{% endblock %}

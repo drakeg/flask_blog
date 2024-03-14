@@ -2,7 +2,7 @@
 
 from blog.models import User, Role
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, SelectField, BooleanField
+from wtforms import StringField, SubmitField, PasswordField, SelectField, BooleanField, DateField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
 from flask_ckeditor import CKEditorField
 
@@ -49,4 +49,20 @@ class PostForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     content = CKEditorField('Content', validators=[DataRequired()])
     tags = StringField('Tags (separated with commas)', validators=[])
+    author = SelectField('Author', coerce=int, validators=[DataRequired()])
     submit = SubmitField('Post')
+
+    def __init__(self, *args, **kwargs):
+        super(PostForm, self).__init__(*args, **kwargs)
+        self.author.choices = [(author.id, author.username) for author in User.query.order_by('username')]
+
+class AnnouncementForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    content = CKEditorField('Content', validators=[DataRequired()])
+    start_date = DateField('Start Date', format='%Y-%m-%d', validators=[DataRequired()])
+    end_date = DateField('End Date', format='%Y-%m-%d', validators=[DataRequired()])
+    submit = SubmitField('Post Announcement')
+
+class AboutForm(FlaskForm):
+    content = CKEditorField('Content', validators=[DataRequired()])
+    submit = SubmitField('Update About Page')

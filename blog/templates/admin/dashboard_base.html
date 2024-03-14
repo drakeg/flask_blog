@@ -61,6 +61,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('admin_bp.manage_announcements') }}">Manage Announcements</a>
                         </li>
+                        <li class="nav-item">
+                          <a class="nav-link" href="{{ url_for('admin_bp.edit_about')}}">Edit About Page</a>
+                        </li>
                         {% endif %}
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('main.home') }}">Back to Home Page</a>
@@ -71,6 +74,13 @@
 
             <!-- Main Content Area -->
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4" style="margin-top: 56px;">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
                 {% block content %}
                 <!-- Content will be injected here -->
                 {% endblock %}

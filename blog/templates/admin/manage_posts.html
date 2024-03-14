@@ -12,6 +12,7 @@
                             <th>#</th>
                             <th>Title</th>
                             <th>Contents</th>
+                            <th>Author</th>
                             <th>Tags</th>
                         </tr>
                     </thead>
@@ -21,7 +22,11 @@
                                 <td>{{ loop.index }}</td>
                                 <td>{{ post.title }}</td>
                                 <td>{{ post.content }}</td>
-                                <td>{{ post.tags }}</td>
+                                <td>{{ post.author.username }}</td>
+                                <td>{% for tag in post.tags %}
+                                        {{ tag.name }}{% if not loop.last %}, {% endif %}
+                                    {% endfor %}
+                                </td>
                                 <td>
                                     <a href="{{ url_for('admin_bp.edit_post', post_id=post.id) }}" class="btn btn-primary btn-sm">Edit</a>
                                     <a href="{{ url_for('admin_bp.delete_post', post_id=post.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');">Delete</a>
