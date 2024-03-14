@@ -46,12 +46,23 @@ def update_post(post_id):
     if form.validate_on_submit():
         post.title = form.title.data
         post.content = form.content.data
+        tag_names = [tag.strip() for tag in form.tags.data.split(',')]
+        
+        for tag_name in tag_names:
+            if tag_name:
+                tag = Tag.query.filter_by(name=tag_name).first()
+                if not tag:
+                    tag = Tag(name=tag_name)
+                    db.session.add(tag)
+                post.tags.append(tag)
+                
         db.session.commit()
         flash('Your post has been updated!', 'success')
         return redirect(url_for('posts.post', post_id=post.id))
     elif request.method == 'GET':
         form.title.data = post.title
         form.content.data = post.content
+        form.tags.data = ', '.join([tag.name for tag in post.tags])
     return render_template('create_post.html', title='Update Post',
                            form=form, legend='Update Post')
 
