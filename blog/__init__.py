@@ -47,12 +47,14 @@ def create_app(config_class=Config):
     from blog.main.routes import main_bp
     from blog.errors.handlers import errors_bp
     from blog.admin.routes import admin_bp
+    from blog.api import api_bp
     app.register_blueprint(announcements_bp)
     app.register_blueprint(users_bp)
     app.register_blueprint(posts_bp)
     app.register_blueprint(main_bp)
     app.register_blueprint(errors_bp)
     app.register_blueprint(admin_bp)
+    app.register_blueprint(api_bp)
 
     # Register CLI commands
     register_commands(app)
