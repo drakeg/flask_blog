@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+  <h2>API Key Management</h2>
+  {% if api_key %}
+  <p>Your API Key: <code>{{ api_key }}</code></p>
+  <p>Generated on: {{ current_user.api_key_generated_on.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+  <p>Expires on: {{ current_user.api_key_expires_on.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+  {% else %}
+  <p>You do not have an API key yet.</p>
+  {% endif %}
+  <form action="" method="post">
+    <button type="submit" class="btn btn-primary">Generate API Key</button>
+  </form>
+</div>
+{% endblock %}

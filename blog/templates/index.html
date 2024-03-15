@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+  {% if posts.items %}
     {% for post in posts.items %}
         <article class="media content-section post" data-tags="{{ post.tags|map(attribute='name')|join(',') }}">
           <img class="rounded-circle article-img" src="{{ post.author.avatar(64) }}">
@@ -38,4 +39,7 @@
       {% endif %}
     {% endfor %}
     <button id="show-all-posts" class="btn btn-info mb-4">Clear Filter</button>
+  {% else %}
+    <p>No posts yet.</p>
+  {% endif %}
 {% endblock content %}

@@ -3,10 +3,11 @@ import os
 from blog import login_manager
 from blog.extensions import db
 from itsdangerous import URLSafeTimedSerializer as Serializer
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask_login import UserMixin
 from hashlib import md5
 from markdown import markdown
+import secrets
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -32,6 +33,9 @@ class User(db.Model, UserMixin):
     posts = db.relationship('Post', backref='author', lazy=True)
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'), nullable=False)
     role = db.relationship('Role', backref=db.backref('users', lazy=True))
+    api_key = db.Column(db.String(50), unique=True, nullable=True)
+    api_key_generated_on = db.Column(db.DateTime, nullable=True)
+    api_key_expires_on = db.Column(db.DateTime, nullable=True)
 
     def generate_token(self):
         serializer = Serializer(os.environ.get('SECRET_KEY'), salt="token-confirm")
@@ -51,6 +55,12 @@ class User(db.Model, UserMixin):
         db.session.commit()
         return True
     
+    def generate_api_key(self):
+        self.api_key = secrets.token_urlsafe(32)
+        self.api_key_generated_on = datetime.utcnow()
+        self.api_key_expires_on = datetime.utcnow() + timedelta(days=30)
+        db.session.commit()
+        
     def role_name(self):
         return self.role.name if self.role else None
 

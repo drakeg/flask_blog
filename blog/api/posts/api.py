@@ -2,6 +2,7 @@ from flask import request
 from flask_restx import Namespace, Resource, fields
 from blog.models import Post
 from blog import db
+from blog.decorators import api_key_required
 
 api = Namespace('posts', description='Posts related operations')
 
@@ -17,6 +18,7 @@ post_model = api.model('Post', {
 
 @api.route('/')
 class PostList(Resource):
+    @api_key_required
     @api.doc('list_posts')
     @api.marshal_list_with(post_model)
     def get(self):
@@ -24,6 +26,7 @@ class PostList(Resource):
         posts = Post.query.all()
         return posts
 
+    @api_key_required
     @api.doc('create_post')
     @api.expect(post_model)
     @api.marshal_with(post_model, code=201)
@@ -39,6 +42,7 @@ class PostList(Resource):
 @api.param('id', 'The post identifier')
 @api.response(404, 'Post not found.')
 class PostResource(Resource):
+    @api_key_required
     @api.doc('get_post')
     @api.marshal_with(post_model)
     def get(self, id):
@@ -48,7 +52,8 @@ class PostResource(Resource):
             api.abort(404)
         else:
             return post
-
+        
+    @api_key_required
     @api.doc('delete_post')
     def delete(self, id):
         """Delete a post"""

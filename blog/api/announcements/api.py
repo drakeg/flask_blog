@@ -2,6 +2,7 @@ from flask import request
 from flask_restx import Namespace, Resource, fields, abort
 from blog.models import Announcement, db
 from datetime import datetime
+from blog.decorators import api_key_required
 
 api = Namespace('announcements', description='Announcement related operations')
 
@@ -17,11 +18,13 @@ announcement_model = api.model('Announcement', {
 
 @api.route('/')
 class AnnouncementList(Resource):
+    @api_key_required
     @api.marshal_list_with(announcement_model)
     def get(self):
         """List all announcements"""
         return Announcement.query.all()
 
+    @api_key_required
     @api.expect(announcement_model, validate=True)
     @api.marshal_with(announcement_model, code=201)
     def post(self):
@@ -36,6 +39,7 @@ class AnnouncementList(Resource):
 @api.param('id', 'The announcement identifier')
 @api.response(404, 'Announcement not found')
 class AnnouncementResource(Resource):
+    @api_key_required
     @api.doc('get_announcement')
     @api.marshal_with(announcement_model)
     def get(self, id):
@@ -46,6 +50,7 @@ class AnnouncementResource(Resource):
         else:
             return announcement
 
+    @api_key_required
     @api.doc('delete_announcement')
     def delete(self, id):
         """Delete an announcement"""

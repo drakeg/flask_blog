@@ -1,6 +1,6 @@
 @media (max-width: 768px) {
   .content-section {
-    padding: 15px;
+    padding: 25px;
   }
   .account-heading {
     font-size: 2rem;
@@ -54,10 +54,12 @@ body {
   
   .content-section {
     background: #ffffff;
-    padding: 20px 30px;
+    padding: 20px 25px;
     border: 1px solid #dddddd;
     border-radius: 3px;
     margin-bottom: 30px;
+    margin-left: 60px;
+    margin-right: 60px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   }
   

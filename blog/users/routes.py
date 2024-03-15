@@ -2,7 +2,8 @@ import os
 import secrets
 import resend
 from PIL import Image
-from flask import render_template, url_for, flash, redirect, request, Blueprint
+from flask import render_template, url_for, flash, redirect, request, jsonify, Blueprint
+from flask_jwt_extended import create_access_token
 from blog.users.forms import RegistrationForm, LoginForm, UpdateAccountForm, ResetPasswordRequestForm, ResetPasswordForm
 from blog.models import User, Post, Role
 from blog import db, bcrypt, logger
@@ -176,3 +177,12 @@ def reset_token(token):
         return redirect(url_for('users.login'))
 
     return render_template('reset_token.html', token=token, form=form)
+
+@users_bp.route('/api_key', methods=['GET', 'POST'])
+@login_required
+def api_key():
+    if request.method == 'POST':
+        current_user.generate_api_key()
+        flash('Your API key has been generated!', 'success')
+        return redirect(url_for('users.api_key'))
+    return render_template('api_key.html', title='API Key', api_key=current_user.api_key)

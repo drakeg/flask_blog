@@ -3,6 +3,7 @@ from flask_restx import Namespace, Resource, fields, abort
 from werkzeug.security import generate_password_hash
 from blog.models import User
 from blog import db
+from blog.decorators import api_key_required
 
 api = Namespace('users', description='User related operations')
 
@@ -15,11 +16,13 @@ user_model = api.model('User', {
 
 @api.route('/')
 class UserList(Resource):
+    @api_key_required
     @api.marshal_list_with(user_model)
     def get(self):
         """List all users"""
         return User.query.all()
 
+    @api_key_required
     @api.expect(user_model, validate=True)
     @api.marshal_with(user_model, code=201)
     def post(self):

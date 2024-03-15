@@ -6,6 +6,16 @@
         <div class="media-body">
           <h2 class="account-heading">{{ current_user.username }}</h2>
           <p class="text-secondary">{{ current_user.email }}</p>
+          <!-- Display API Key Section -->
+          {% if current_user.api_key %}
+            <div class="api-key-info">
+              <h3>Your API Key</h3>
+              <p>Your current API key: <code>{{ current_user.api_key }}</code></p>
+              <p><small>Generated on: {{ current_user.api_key_generated_on.strftime('%Y-%m-%d %H:%M:%S') }}</small></p>
+            </div>
+          {% else %}
+            <p>You do not have an API key. Visit the <a href="{{ url_for('users.api_key') }}">API key page</a> to generate one.</p>
+          {% endif %}
         </div>
       </div>
         <form method="POST" action="" enctype="multipart/form-data">
@@ -14,7 +24,6 @@
                 <legend class="border-bottom mb-4">Account Info</legend>
                 <div class="form-group">
                     {{ form.username.label(class="form-control-label") }}
-
                     {% if form.username.errors %}
                         {{ form.username(class="form-control form-control-lg is-invalid") }}
                         <div class="invalid-feedback">

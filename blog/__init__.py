@@ -5,6 +5,7 @@ from flask import Flask
 from flask_pagedown import PageDown
 from flask_bcrypt import Bcrypt
 from flask_ckeditor import CKEditor
+from flask_jwt_extended import JWTManager
 from flask_mailman import Mail
 from flask_migrate import Migrate
 from blog.config import Config
@@ -28,6 +29,7 @@ mail = Mail()
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(Config)
+    app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY')
 
     db.init_app(app)
     bcrypt.init_app(app)
@@ -36,6 +38,7 @@ def create_app(config_class=Config):
     mail.init_app(app)
     migrate = Migrate(app, db, compare_type=True, render_as_batch=True)
     pagedown = PageDown(app)
+    jwt = JWTManager(app)
 
     login_manager.login_view = 'users.login'
     login_manager.login_message_category = 'info'

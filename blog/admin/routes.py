@@ -104,7 +104,17 @@ def add_post():
     form = PostForm()
     if form.validate_on_submit():
         user = User.query.get(form.author.data)
-        post = Post(title=form.title.data, content=form.content.data, user_id=user)
+        post = Post(title=form.title.data, content=form.content.data, user_id=user.id)
+        tag_names = request.form['tags'].split(',')
+        
+        for tag_name in tag_names:
+            tag = Tag.query.filter_by(name=tag_name.strip()).first()
+            if not tag:
+                # Create a new tag if it doesn't exist
+                tag = Tag(name=tag_name.strip())
+                db.session.add(tag)
+            post.tags.append(tag)
+
         db.session.add(post)
         db.session.commit()
         flash('Your post has been created!', 'success')

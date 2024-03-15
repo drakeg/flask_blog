@@ -2,10 +2,15 @@
 
 {% block content %}
 <div class="container">
+  {% if about_content %}
     {% if content.content_html %}
-        {{ content.content_html | safe }}
+          {{ content.content_html | safe }}
+    {% else %}
+      {{ content.content | safe }}
+    {% endif %}
   {% else %}
-    {{ content.content | safe }}
+    <h2>About Us</h2>
+    <p>Coming Soon</p>
   {% endif %}
 </div>
 {% endblock %}

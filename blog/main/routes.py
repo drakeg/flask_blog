@@ -12,5 +12,5 @@ def home():
 @main_bp.route('/about')
 def about():
     title = 'About'
-    about_content = AboutPageContent.query.first_or_404()
+    about_content = AboutPageContent.query.first()
     return render_template('about.html', content=about_content, title=title)

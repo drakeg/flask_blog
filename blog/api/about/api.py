@@ -3,6 +3,7 @@ from flask_restx import Namespace, Resource, fields
 from blog.models import AboutPageContent
 from blog import db
 from flask import abort
+from blog.decorators import api_key_required
 
 api = Namespace('about', description='About page operations')
 
@@ -14,11 +15,13 @@ about_model = api.model('AboutPageContent', {
 
 @api.route('/')
 class AboutList(Resource):
+    @api_key_required
     @api.marshal_list_with(about_model)
     def get(self):
         """List all about content entries"""
         return AboutPageContent.query.all()
 
+    @api_key_required
     @api.expect(about_model, validate=True)
     @api.marshal_with(about_model, code=201)
     def post(self):
@@ -33,12 +36,14 @@ class AboutList(Resource):
 @api.param('id', 'The about content identifier')
 @api.response(404, 'About content not found')
 class AboutResource(Resource):
+    @api_key_required
     @api.marshal_with(about_model)
     def get(self, id):
         """Fetch a single about content entry"""
         about_content = AboutPageContent.query.get_or_404(id)
         return about_content
 
+    @api_key_required
     @api.doc('delete_about')
     def delete(self, id):
         """Delete an about content entry"""
