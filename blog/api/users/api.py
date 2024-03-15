@@ -10,7 +10,7 @@ user_model = api.model('User', {
     'id': fields.Integer(readOnly=True, description="The user's unique identifier"),
     'username': fields.String(required=True, description="The user's username"),
     'email': fields.String(required=True, description="The user's email"),
-    'role': fields.String(required=True, description="The user's role")
+    'role_name': fields.String(attribute=lambda x: x.role_name())
 })
 
 @api.route('/')

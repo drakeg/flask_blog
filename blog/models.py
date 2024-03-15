@@ -50,6 +50,9 @@ class User(db.Model, UserMixin):
         user.confirmed_on = datetime.utcnow()
         db.session.commit()
         return True
+    
+    def role_name(self):
+        return self.role.name if self.role else None
 
     @classmethod
     def find_by_email(cls, email):
@@ -71,7 +74,10 @@ class Post(db.Model):
     content_html = db.Column(db.String())
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     tags = db.relationship('Tag', secondary=posts_tags, lazy='subquery',
-                           backref=db.backref('posts', lazy=True))
+                           backref=db.backref('posts', lazy='dynamic'))
+
+    def tag_names(self):
+        return [tag.name for tag in self.tags]
 
     def __repr__(self):
         return f"Post('{self.title}', '{self.date_posted}')"

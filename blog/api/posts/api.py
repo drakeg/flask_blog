@@ -12,7 +12,7 @@ post_model = api.model('Post', {
     'content_html': fields.String(required=True, description='The post content in HTML'),
     'date_posted': fields.DateTime(description='The date the post was posted'),
     'author': fields.String(required=True, description='The post author'),
-    'tags': fields.List(fields.String, description='The post tags')
+    'tag_names': fields.List(fields.String, attribute=lambda x: x.tag_names())
 })
 
 @api.route('/')
