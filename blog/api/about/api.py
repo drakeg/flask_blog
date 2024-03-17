@@ -4,6 +4,7 @@ from blog.models import AboutPageContent
 from blog import db
 from flask import abort
 from blog.decorators import api_key_required
+from blog.utilities import validate_json_input
 
 api = Namespace('about', description='About page operations')
 
@@ -27,6 +28,12 @@ class AboutList(Resource):
     def post(self):
         """Create a new about content entry"""
         data = request.json
+
+        required_fields = ['content']
+        errors = validate_json_input(data, required_fields)
+        if errors:
+            return jsonify({'errors': errors}), 400
+            
         about_content = AboutPageContent(content=data['content'])
         db.session.add(about_content)
         db.session.commit()

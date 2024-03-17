@@ -256,3 +256,14 @@ def edit_about():
         form.content.data = about_content.content
 
     return render_template('admin/edit_about.html', title='Edit About Page', form=form)
+
+@admin_bp.route('/edit_settings', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def edit_settings():
+    settings = Settings.query.first()
+    if not settings:
+        # Initialize Settings if it does not exist
+        settings = Settings(site_name='My Site', site_description='My site is awesome!')
+        db.session.add(settings)
+        db.session.commit()

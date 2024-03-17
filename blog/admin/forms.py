@@ -37,8 +37,17 @@ class ChangePasswordForm(FlaskForm):
 class EditUserForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
+    bio = CKEditorField('Bio')
     role = SelectField('Role', coerce=int, choices=[])
     is_confirmed = BooleanField('Confirmed')
+    linkedin = StringField('LinkedIn')
+    github = StringField('GitHub')
+    twitter = StringField('Twitter')
+    facebook = StringField('Facebook')
+    instagram = StringField('Instagram')
+    youtube = StringField('YouTube')
+    snapchat = StringField('Snapchat')
+    website = StringField('Website')
     submit = SubmitField('Update User')
 
     def __init__(self, *args, **kwargs):

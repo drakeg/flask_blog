@@ -36,6 +36,14 @@ class User(db.Model, UserMixin):
     api_key = db.Column(db.String(50), unique=True, nullable=True)
     api_key_generated_on = db.Column(db.DateTime, nullable=True)
     api_key_expires_on = db.Column(db.DateTime, nullable=True)
+    facebook = db.Column(db.String(50), unique=True, nullable=True)
+    twitter = db.Column(db.String(50), unique=True, nullable=True)
+    linkedin = db.Column(db.String(50), unique=True, nullable=True)
+    instagram = db.Column(db.String(50), unique=True, nullable=True)
+    snapchat = db.Column(db.String(50), unique=True, nullable=True)
+    youtube = db.Column(db.String(50), unique=True, nullable=True)
+    website = db.Column(db.String(50), unique=True, nullable=True)
+    bio = db.Column(db.Text, nullable=True)
 
     def generate_token(self):
         serializer = Serializer(os.environ.get('SECRET_KEY'), salt="token-confirm")
@@ -138,3 +146,7 @@ class AboutPageContent(db.Model):
         markdown(value, output_format='html'),
         tags=allowed_tags, strip=True))
 db.event.listen(AboutPageContent.content, 'set', AboutPageContent.on_changed_content)
+
+class Settings(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    sitename = db.Column(db.String(50), unique=True, nullable=False)

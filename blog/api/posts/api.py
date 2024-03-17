@@ -2,7 +2,9 @@ from flask import request
 from flask_restx import Namespace, Resource, fields
 from blog.models import Post
 from blog import db
+from flask_login import current_user
 from blog.decorators import api_key_required
+from blog.utilities import validate_json_input
 
 api = Namespace('posts', description='Posts related operations')
 
@@ -33,7 +35,13 @@ class PostList(Resource):
     def post(self):
         """Create a new post"""
         data = request.json
-        new_post = Post(title=data['title'], content=data['content'])
+        author_id = current_user.id
+        required_fields = ['title', 'content']
+        errors = validate_json_input(data, required_fields)
+        if errors:
+            return jsonify({'errors': errors}), 400
+
+        new_post = Post(title=data['title'], content=data['content'], user_id=author_id)
         db.session.add(new_post)
         db.session.commit()
         return new_post, 201
