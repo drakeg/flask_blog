@@ -147,6 +147,6 @@ class AboutPageContent(db.Model):
         tags=allowed_tags, strip=True))
 db.event.listen(AboutPageContent.content, 'set', AboutPageContent.on_changed_content)
 
-class Settings(db.Model):
+class SiteSettings(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     sitename = db.Column(db.String(50), unique=True, nullable=False)

@@ -12,6 +12,7 @@ from blog.config import Config
 from blog.models import Post, Announcement
 from blog.commands import register_commands
 from logtail import LogtailHandler
+from sqlalchemy import MetaData
 import logging
 
 handler = LogtailHandler(source_token=os.environ.get('LOGTAIL_TOKEN'))
@@ -26,6 +27,16 @@ login_manager.login_view = 'users.login'
 login_manager.login_message_category = 'info'
 mail = Mail()
 
+convention = {
+    "ix": 'ix_%(column_0_label)s',
+    "uq": "uq_%(table_name)s_%(column_0_name)s",
+    "ck": "ck_%(table_name)s_%(constraint_name)s",
+    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+    "pk": "pk_%(table_name)s"
+}
+
+metadata = MetaData(naming_convention=convention)
+
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(Config)
@@ -36,7 +47,7 @@ def create_app(config_class=Config):
     ckeditor.init_app(app)
     login_manager.init_app(app)
     mail.init_app(app)
-    migrate = Migrate(app, db, compare_type=True, render_as_batch=True)
+    migrate = Migrate(app, db, compare_type=True, render_as_batch=True, metadata=metadata)
     pagedown = PageDown(app)
     jwt = JWTManager(app)
 
