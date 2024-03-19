@@ -41,6 +41,7 @@ class User(db.Model, UserMixin):
     linkedin = db.Column(db.String(50), unique=True, nullable=True)
     instagram = db.Column(db.String(50), unique=True, nullable=True)
     snapchat = db.Column(db.String(50), unique=True, nullable=True)
+    tiktok = db.Column(db.String(50), unique=True, nullable=True)
     youtube = db.Column(db.String(50), unique=True, nullable=True)
     website = db.Column(db.String(50), unique=True, nullable=True)
     bio = db.Column(db.Text, nullable=True)
@@ -149,4 +150,6 @@ db.event.listen(AboutPageContent.content, 'set', AboutPageContent.on_changed_con
 
 class SiteSettings(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    sitename = db.Column(db.String(50), unique=True, nullable=False)
+    site_name = db.Column(db.String(50), unique=True, nullable=False)
+    site_description = db.Column(db.String(50), unique=True, nullable=False)    
+    site_email = db.Column(db.String(50), unique=True, nullable=False)

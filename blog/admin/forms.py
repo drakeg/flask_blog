@@ -1,6 +1,6 @@
 # forms.py
 
-from blog.models import User, Role
+from blog.models import User, Role, SiteSettings
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, PasswordField, SelectField, BooleanField, DateField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
@@ -13,6 +13,15 @@ class AddUserForm(FlaskForm):
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     role = SelectField('Role', coerce=int)
     is_confirmed = BooleanField('Confirmed')
+    linkedin = StringField('LinkedIn')
+    github = StringField('GitHub')
+    tiktok = StringField('TikTok')
+    twitter = StringField('Twitter')
+    facebook = StringField('Facebook')
+    instagram = StringField('Instagram')
+    youtube = StringField('YouTube')
+    snapchat = StringField('Snapchat')
+    website = StringField('Website')
     submit = SubmitField('Add User')
 
     def __init__(self, *args, **kwargs):
@@ -42,6 +51,7 @@ class EditUserForm(FlaskForm):
     is_confirmed = BooleanField('Confirmed')
     linkedin = StringField('LinkedIn')
     github = StringField('GitHub')
+    tiktok = StringField('TikTok')
     twitter = StringField('Twitter')
     facebook = StringField('Facebook')
     instagram = StringField('Instagram')
@@ -75,3 +85,9 @@ class AnnouncementForm(FlaskForm):
 class AboutForm(FlaskForm):
     content = CKEditorField('Content', validators=[DataRequired()])
     submit = SubmitField('Update About Page')
+
+class SiteSettingsForm(FlaskForm):
+    site_name = StringField('Site Name', validators=[DataRequired()])
+    site_description = StringField('Site Description')
+    site_email = StringField('Site Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Update Settings')

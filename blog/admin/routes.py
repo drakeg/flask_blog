@@ -261,9 +261,9 @@ def edit_about():
 @login_required
 @admin_required
 def edit_settings():
-    settings = Settings.query.first()
-    if not settings:
-        # Initialize Settings if it does not exist
-        settings = Settings(site_name='My Site', site_description='My site is awesome!')
-        db.session.add(settings)
+    site_settings = SiteSettings.query.first()
+    if not site_settings:
+        # Initialize SiteSettings if it does not exist
+        site_settings = SiteSettings(site_name='My Site', site_email='admin@site.org', site_description='My site is awesome!')
+        db.session.add(site_settings)
         db.session.commit()

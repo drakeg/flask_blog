@@ -12,6 +12,7 @@
               <h3>Your API Key</h3>
               <p>Your current API key: <code>{{ current_user.api_key }}</code></p>
               <p><small>Generated on: {{ current_user.api_key_generated_on.strftime('%Y-%m-%d %H:%M:%S') }}</small></p>
+              <p><small>Expires: {{ current_user.api_key_expires_on.strftime('%Y-%m-%d %H:%M:%S') }}</small></p>
             </div>
           {% else %}
             <p>You do not have an API key. Visit the <a href="{{ url_for('users.api_key') }}">API key page</a> to generate one.</p>
@@ -49,6 +50,8 @@
                     {% endif %}
                 </div>
             </fieldset>
+            <p>Role: {{ current_user.role.name}}</p>
+            <p>Confirmed On: {{ current_user.confirmed_on.strftime('%Y-%m-%d %H:%M:%S') }}</p>
             <div class="form-group">
                 {{ form.submit(class="btn btn-outline-info") }}
             </div>

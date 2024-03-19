@@ -33,14 +33,6 @@
                 </div>
 
                 <div class="mb-3">
-                    {{ form.facebook.label(class="form-label") }}
-                    {{ form.facebook(class="form-control" + (" is-invalid" if form.facebook.errors else "")) }}
-                    {% for error in form.facebook.errors %}
-                        <div class="invalid-feedback">{{ error }}</div>
-                    {% endfor %}
-                </div>
-
-                <div class="mb-3">
                     {{ form.role.label(class="form-label") }}
                     {{ form.role(class="form-select" + (" is-invalid" if form.role.errors else "")) }}
                     {% for error in form.role.errors %}
@@ -52,6 +44,49 @@
                     {{ form.is_confirmed(id="confirmedCheck", class="form-check-input" + (" is-invalid" if form.is_confirmed.errors else "")) }}
                     {{ form.is_confirmed.label(class="form-check-label", for="confirmedCheck") }}
                     {% for error in form.is_confirmed.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                
+                <hr>
+
+                <p>Social</p>
+                <div class="mb-3">
+                    {{ form.facebook.label(class="form-label") }} <i class="bi bi-facebook"></i>
+                    {{ form.facebook(class="form-control" + (" is-invalid" if form.facebook.errors else "")) }}
+                    {% for error in form.facebook.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.instagram.label(class="form-label") }} <i class="bi bi-instagram"></i>
+                    {{ form.instagram(class="form-control" + (" is-invalid" if form.instagram.errors else "")) }}
+                    {% for error in form.instagram.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.linkedin.label(class="form-label") }} <i class="bi bi-linkedin"></i>
+                    {{ form.linkedin(class="form-control" + (" is-invalid" if form.linkedin.errors else "")) }}
+                    {% for error in form.linkedin.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.snapchat.label(class="form-label") }} <i class="bi bi-snapchat"></i>
+                    {{ form.snapchat(class="form-control" + (" is-invalid" if form.snapchat.errors else "")) }}
+                    {% for error in form.snapchat.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.tiktok.label(class="form-label") }} <i class="bi bi-tiktok"></i>
+                    {{ form.tiktok(class="form-control" + (" is-invalid" if form.tiktok.errors else "")) }}
+                    {% for error in form.tiktok.errors %}
                         <div class="invalid-feedback">{{ error }}</div>
                     {% endfor %}
                 </div>
