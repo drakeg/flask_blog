@@ -39,6 +39,13 @@ class UpdateAccountForm(FlaskForm):
     email = StringField('Email',
                         validators=[DataRequired(), Email()])
     picture = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
+    facebook = StringField('Facebook')
+    instagram = StringField('Instagram')
+    snapchat = StringField('Snapchat')
+    tiktok = StringField('TikTok')
+    twitter = StringField('Twitter')
+    website = StringField('Website')
+    youtube = StringField('YouTube')
     submit = SubmitField('Update')
 
     def validate_username(self, username):

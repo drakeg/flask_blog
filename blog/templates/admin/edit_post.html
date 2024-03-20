@@ -42,6 +42,16 @@
                         Enter tags separated by commas. Example: fitness, nutrition, wellness
                     </small>
                 </div>
+
+                <p>Social</p>
+
+                <div class="mb-3">
+                    {{ form.facebook.label(class="form-label") }}
+                    {{ form.facebook(class="form-control" + (" is-invalid" if form.facebook.errors else "")) }}
+                    {% for error in form.facebook.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
                 
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                     <button type="submit" class="btn btn-primary me-md-2">Update Post</button>
