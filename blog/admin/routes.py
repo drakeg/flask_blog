@@ -1,7 +1,7 @@
 # admin.py
 from blog import bcrypt, db
-from blog.admin.forms import EditUserForm, ChangePasswordForm, AddUserForm, PostForm, AnnouncementForm, AboutForm
-from blog.models import User, Post, Role, Announcement, Tag, AboutPageContent
+from blog.admin.forms import EditUserForm, ChangePasswordForm, AddUserForm, PostForm, AnnouncementForm, AboutForm, SiteSettingsForm
+from blog.models import User, Post, Role, Announcement, Tag, AboutPageContent, SiteSettings
 from blog.decorators import admin_required
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
@@ -267,3 +267,18 @@ def edit_settings():
         site_settings = SiteSettings(site_name='My Site', site_email='admin@site.org', site_description='My site is awesome!')
         db.session.add(site_settings)
         db.session.commit()
+
+    form = SiteSettingsForm()
+    if form.validate_on_submit():
+        site_settings.site_name = form.site_name.data
+        site_settings.site_email = form.site_email.data
+        site_settings.site_description = form.site_description.data
+        db.session.commit()
+        flash('The site settings have been updated.', 'success')
+        return redirect(url_for('admin_bp.admin_dashboard'))
+    elif request.method == 'GET':
+        form.site_name.data = site_settings.site_name
+        form.site_email.data = site_settings.site_email
+        form.site_description.data = site_settings.site_description
+        
+    return render_template('admin/edit_settings.html', title='Edit Site Settings', form=form)

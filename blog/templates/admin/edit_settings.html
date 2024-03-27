@@ -1,0 +1,36 @@
+<!-- templates/admin/edit_settings.html -->
+{% extends "admin/dashboard_base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h2>Edit Post</h2>
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                
+                <div class="mb-3">
+                    {{ form.site_name.label(class="form-label") }}
+                    {{ form.site_name(class="form-control" + (" is-invalid" if form.site_name.errors else "")) }}
+                    {% for error in form.site_name.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="mb-3">
+                    {{ form.site_description.label(class="form-label") }}
+                    {{ form.site_description(class="form-control" + (" is-invalid" if form.site_description.errors else "")) }}
+                    {% for error in form.site_description.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="mb-3">
+                    {{ form.site_email.label(class="form-label") }}
+                    {{ form.site_email(class="form-control" + (" is-invalid" if form.site_email.errors else "")) }}
+                    {% for error in form.site_email.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

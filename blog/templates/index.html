@@ -40,6 +40,14 @@
     {% endfor %}
     <button id="show-all-posts" class="btn btn-info mb-4">Clear Filter</button>
   {% else %}
-    <p>No posts yet.</p>
+    <p>We're excited to share our journey with you. Stay tuned for our first posts.</p>
+    <h2>Get to Know Us</h2>
+    <p>Learn more about our team and mission on our <a href="{{ url_for('main.about') }}">About Page</a>.</p>
+    <h2>Stay Updated</h2>
+    <p>Sign up for our newsletter to be the first to know when we publish new content.</p>
+    <!-- Newsletter sign-up form here -->
+    <h2>Follow Us</h2>
+    <!-- Social media links here -->
+    <p>Join our community and start the conversation on social media.</p>
   {% endif %}
 {% endblock content %}
