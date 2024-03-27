@@ -36,7 +36,7 @@
     border-color: #198754;
   }
   
-  .content-section, .api-key-info, .modal-body, fieldset {
+  .content-section, .api-key-info, .modal-body, fieldset, .api-section, .account-section {
     background: #ffffff;
     padding: 20px;
     border: 1px solid var(--border-color);
@@ -45,7 +45,7 @@
     box-shadow: 0 0 15px var(--shadow-color);
   }
   
-  .article-title, .article-content, .form-group legend, .btn-outline-info, .modal-content {
+  .article-title, .article-content, .form-group legend, .btn-outline-info, .modal-content, .api-title, .account-heading { 
     color: var(--primary-color);
   }
   

@@ -3,6 +3,8 @@ from flask_wtf.file import FileField, FileAllowed
 from wtforms import PasswordField, StringField, SubmitField, TextAreaField, BooleanField, EmailField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from blog.models import User
+from flask_login import current_user
+from flask_ckeditor import CKEditorField
 
 class RegistrationForm(FlaskForm):
     username = StringField('Username',
@@ -39,6 +41,7 @@ class UpdateAccountForm(FlaskForm):
     email = StringField('Email',
                         validators=[DataRequired(), Email()])
     picture = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
+    bio = CKEditorField('Bio')
     facebook = StringField('Facebook')
     instagram = StringField('Instagram')
     snapchat = StringField('Snapchat')

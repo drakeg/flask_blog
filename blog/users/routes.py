@@ -114,12 +114,28 @@ def account():
     if form.validate_on_submit():
         current_user.username = form.username.data
         current_user.email = form.email.data
+        current_user.bio = form.bio.data
+        current_user.facebook = form.facebook.data
+        current_user.instagram = form.instagram.data
+        current_user.snapchat = form.snapchat.data
+        current_user.tiktok = form.tiktok.data
+        current_user.twitter = form.twitter.data
+        current_user.youtube = form.youtube.data
+        current_user.website = form.website.data
         db.session.commit()
         flash('Your account has been updated!', 'success')
         return redirect(url_for('users.account'))
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.email.data = current_user.email
+        form.bio.data = current_user.bio
+        form.facebook.data = current_user.facebook
+        form.instagram.data = current_user.instagram
+        form.snapchat.data = current_user.snapchat
+        form.tiktok.data = current_user.tiktok
+        form.twitter.data = current_user.twitter
+        form.youtube.data = current_user.youtube
+        form.website.data = current_user.website
     return render_template('account.html', title='Account',
                            form=form)
 
