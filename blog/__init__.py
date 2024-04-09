@@ -9,8 +9,9 @@ from flask_jwt_extended import JWTManager
 from flask_mailman import Mail
 from flask_migrate import Migrate
 from blog.config import Config
-from blog.models import Post, Announcement
+from blog.models import Post, Announcement, SiteSettings
 from blog.commands import register_commands
+from blog.utilities import get_site_settings
 from logtail import LogtailHandler
 from sqlalchemy import MetaData
 import logging
@@ -86,5 +87,16 @@ def create_app(config_class=Config):
                                         .order_by(Announcement.date_posted.desc()).all()
         print(active_announcements)
         return dict(active_announcements=active_announcements)
+
+    @app.context_processor
+    def inject_site_settings():
+        settings = get_site_settings()
+        if settings:
+            return {
+                'site_name': settings.site_name,
+                'site_description': settings.site_description,
+                'site_email': settings.site_email
+            }
+        return {}
 
     return app

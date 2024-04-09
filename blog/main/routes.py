@@ -1,6 +1,8 @@
-from flask import render_template, request, Blueprint
-from blog.models import Post, AboutPageContent
+from flask import render_template, request, Blueprint, flash, redirect, url_for
+from blog.models import Post, AboutPageContent, NewsletterSubscription
+from blog.main.forms import NewsletterForm
 from sqlalchemy import or_
+from blog import db
 
 main_bp = Blueprint('main', __name__)
 
@@ -29,3 +31,17 @@ def search():
     else:
         posts = []
     return render_template('search_results.html', posts=posts, query=query)
+
+@main_bp.route('/subscribe', methods=['GET', 'POST'])
+def subscribe():
+    form = NewsletterForm()
+    if form.validate_on_submit():
+        if NewsletterSubscription.query.filter_by(email=form.email.data).first():
+            flash('You have already subscribed to the newsletter!', 'info')
+        else:
+            subscription = NewsletterSubscription(email=form.email.data)
+            db.session.add(subscription)
+            db.session.commit()
+            flash('You have successfully subscribed to the newsletter!', 'success')
+        return redirect(url_for('main.home'))
+    return render_template('subscribe.html', form=form)

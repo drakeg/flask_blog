@@ -153,3 +153,11 @@ class SiteSettings(db.Model):
     site_name = db.Column(db.String(50), unique=True, nullable=False)
     site_description = db.Column(db.String(50), unique=True, nullable=False)    
     site_email = db.Column(db.String(50), unique=True, nullable=False)
+
+class NewsletterSubscription(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    subscribed_on = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    def __repr__(self):
+        return '<NewsletterSubscription %r>' % self.email
